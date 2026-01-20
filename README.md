@@ -1,102 +1,98 @@
-# Google Ads MCP Server
+# Google Ads MCP Server for LLMs 🚀
 
-This MCP (Model Context Protocol) server provides tools to interact with the Google Ads API directly from LLM interfaces like Cursor or Claude Desktop. It allows you to query campaign data, analyze search terms, and execute custom GAQL queries.
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![MCP Standard](https://img.shields.io/badge/MCP-Standard-green)](https://modelcontextprotocol.io/)
 
-## Features
+A powerful **Model Context Protocol (MCP)** server that connects **Google Ads API** with AI assistants like **Claude Desktop** and **Cursor IDE**.
 
-This server exposes the following tools:
+This tool empowers your LLM workflow to **automate campaign management**, **analyze search terms**, and **execute complex GAQL queries** purely through natural language. No more manual dashboard toggling—chat with your ads data directly.
 
-*   **`google_ads_list_campaigns(customer_id, limit=20)`**:
-    Lists enabled campaigns for a given account with key performance metrics such as Impressions, Clicks, Cost (R$), CTR, and Average CPC.
-    *   `customer_id`: Account Name (mapped in `accounts.json`) or numeric Customer ID.
-    *   `limit`: Max number of campaigns to return.
+## ✨ Features
 
-*   **`google_ads_get_search_terms(customer_id, days=30)`**:
-    Retrieves the actual search terms that triggered your ads, sorted by cost. Useful for auditing traffic quality.
-    *   `days`: Lookback window in days (default: 30).
+Unlock the full potential of AI-driven marketing with these core capabilities:
 
-*   **`google_ads_run_gaql(customer_id, query)`**:
-    Executes a raw GAQL (Google Ads Query Language) query for advanced custom reporting.
-    *   `query`: The GAQL query string (e.g., `SELECT campaign.name, metrics.clicks FROM campaign LIMIT 5`).
+*   **📊 Campaign Reporting**:
+    *   **`google_ads_list_campaigns`**: Instantly retrieve performance metrics (Impressions, Clicks, CTR, Cost, CPC) for your enabled campaigns.
+*   **🔍 Search Term Audits**:
+    *   **`google_ads_get_search_terms`**: Discover exactly what users are typing to find your ads. Optimize spend by identifying excessive costs or high-converting terms.
+*   **💪 Power User Queries (GAQL)**:
+    *   **`google_ads_run_gaql`**: Run any custom **Google Ads Query Language** statement for bespoke reporting needs.
 
-## Prerequisites
+## 🛠️ Prerequisites
 
-*   Python 3.10 or higher.
-*   A Google Ads Manager Account or Standard Account with API Access.
-*   Google Ads API Credentials (Developer Token, Client ID, Client Secret, Refresh Token).
-*   [`uv`](https://github.com/astral-sh/uv) (recommended) or `pip`.
+*   **Python 3.10** or higher.
+*   **Google Ads Account**: A Manager Account (MCC) or Standard Account with API access enabled.
+*   **API Credentials**: Developer Token, Client ID, Client Secret, and Refresh Token.
+*   **Package Manager**: [`uv`](https://github.com/astral-sh/uv) (recommended for speed) or standard `pip`.
 
-## Installation
+## 🚀 Installation
 
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/phwtsp/mcp-google-ads.git
-    cd mcp-google-ads
-    ```
+### 1. Clone the Repository
+```bash
+git clone https://github.com/phwtsp/mcp-google-ads.git
+cd mcp-google-ads
+```
 
-2.  **Create a virtual environment**:
-    ```bash
-    # using uv (fast)
-    uv venv
-    source .venv/bin/activate
+### 2. Set Up Virtual Environment
 
-    # using python
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    ```
+**Option A: Using `uv` (Fastest)**
+```bash
+uv venv
+source .venv/bin/activate
+```
 
-3.  **Install dependencies**:
-    ```bash
-    pip install "mcp[cli]" google-ads
-    ```
-    *Note: The server uses `FastMCP` from the `mcp` package.*
+**Option B: Using standard Python**
+```bash
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+```
 
-## Configuration
+### 3. Install Dependencies
+```bash
+pip install "mcp[cli]" google-ads
+```
 
-### 1. Environment Variables
+## ⚙️ Configuration
 
-You must set the following environment variables. You can do this in your shell configuration or pass them when running the server.
+### Environment Variables
+For security, credentials are passed via environment variables. Add these to your `.env` file or export them in your shell:
 
-*   `GOOGLE_ADS_DEVELOPER_TOKEN`
-*   `GOOGLE_ADS_CLIENT_ID`
-*   `GOOGLE_ADS_CLIENT_SECRET`
-*   `GOOGLE_ADS_REFRESH_TOKEN`
+| Variable | Description |
+| :--- | :--- |
+| `GOOGLE_ADS_DEVELOPER_TOKEN` | Your Google Ads Developer Token |
+| `GOOGLE_ADS_CLIENT_ID` | OAuth2 Client ID |
+| `GOOGLE_ADS_CLIENT_SECRET` | OAuth2 Client Secret |
+| `GOOGLE_ADS_REFRESH_TOKEN` | OAuth2 Refresh Token |
 
-### 2. Accounts Mapping (`accounts.json`)
-
-To use friendly names instead of numeric Customer IDs, create an `accounts.json` file in the root directory:
+### Account Mapping (`accounts.json`)
+Manage multiple accounts easily by mapping friendly names to Customer IDs. Create an `accounts.json` file in the root:
 
 ```json
 {
     "My Client A": "123-456-7890",
-    "Another Account": "9876543210"
+    "Agency Account": "987-654-3210"
 }
 ```
+*Note: The server automatically handles hyphens, so "123-456-7890" is processed as "1234567890".*
 
-The server automatically strips non-numeric characters, so "123-456-7890" becomes "1234567890".
+## 📖 Usage
 
-## Usage
-
-### Running with MCP CLI (Recommended)
-
-You can run the server using the MCP CLI inspector to test it interactively:
-
+### Testing with MCP CLI
+Run the server interactively using the MCP Inspector:
 ```bash
 mcp dev server.py
 ```
 
-### Configuring in Cursor / Claude Desktop
-
-Add the server configuration to your MCP settings file (e.g., `~/.cursor/mcp.json` or equivalent).
-
-**Example Configuration:**
+### Integration: Cursor & Claude Desktop
+Add this configuration to your MCP settings file (typically `~/.cursor/mcp.json` or `claude_desktop_config.json`):
 
 ```json
 {
   "mcpServers": {
     "google-ads": {
-      "command": "/path/to/your/venv/bin/python",
-      "args": ["/path/to/mcp-google-ads/server.py"],
+      "command": "/absolute/path/to/your/venv/bin/python",
+      "args": ["/absolute/path/to/mcp-google-ads/server.py"],
       "env": {
         "GOOGLE_ADS_DEVELOPER_TOKEN": "your_token",
         "GOOGLE_ADS_CLIENT_ID": "your_client_id",
@@ -107,8 +103,6 @@ Add the server configuration to your MCP settings file (e.g., `~/.cursor/mcp.jso
   }
 }
 ```
-*Make sure to replace the paths and credentials with your actual values.*
 
-## License
-
-This project is licensed under the MIT License.
+## 📄 License
+This project is licensed under the [MIT License](LICENSE).
