@@ -18,6 +18,8 @@ Unlock the full potential of AI-driven marketing with these core capabilities:
   - **`google_ads_get_search_terms`**: Discover exactly what users are typing to find your ads. Optimize spend by identifying excessive costs or high-converting terms.
 - **💪 Power User Queries (GAQL)**:
   - **`google_ads_run_gaql`**: Run any custom **Google Ads Query Language** statement for bespoke reporting needs.
+- **📈 Keyword Research**:
+  - **`google_ads_get_keyword_volume`**: Retrieve monthly search volumes and competition levels for a list of keywords. Currently optimized for **Brazil (PT-BR)**.
 
 ## 🛠️ Prerequisites
 
