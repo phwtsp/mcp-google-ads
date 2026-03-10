@@ -12,23 +12,24 @@ This tool empowers your LLM workflow to **automate campaign management**, **anal
 
 Unlock the full potential of AI-driven marketing with these core capabilities:
 
-*   **📊 Campaign Reporting**:
-    *   **`google_ads_list_campaigns`**: Instantly retrieve performance metrics (Impressions, Clicks, CTR, Cost, CPC) for your enabled campaigns.
-*   **🔍 Search Term Audits**:
-    *   **`google_ads_get_search_terms`**: Discover exactly what users are typing to find your ads. Optimize spend by identifying excessive costs or high-converting terms.
-*   **💪 Power User Queries (GAQL)**:
-    *   **`google_ads_run_gaql`**: Run any custom **Google Ads Query Language** statement for bespoke reporting needs.
+- **📊 Campaign Reporting**:
+  - **`google_ads_list_campaigns`**: Instantly retrieve performance metrics (Impressions, Clicks, CTR, Cost, CPC) for your enabled campaigns.
+- **🔍 Search Term Audits**:
+  - **`google_ads_get_search_terms`**: Discover exactly what users are typing to find your ads. Optimize spend by identifying excessive costs or high-converting terms.
+- **💪 Power User Queries (GAQL)**:
+  - **`google_ads_run_gaql`**: Run any custom **Google Ads Query Language** statement for bespoke reporting needs.
 
 ## 🛠️ Prerequisites
 
-*   **Python 3.10** or higher.
-*   **Google Ads Account**: A Manager Account (MCC) or Standard Account with API access enabled.
-*   **API Credentials**: Developer Token, Client ID, Client Secret, and Refresh Token.
-*   **Package Manager**: [`uv`](https://github.com/astral-sh/uv) (recommended for speed) or standard `pip`.
+- **Python 3.10** or higher.
+- **Google Ads Account**: A Manager Account (MCC) or Standard Account with API access enabled.
+- **API Credentials**: Developer Token, Client ID, Client Secret, and Refresh Token.
+- **Package Manager**: [`uv`](https://github.com/astral-sh/uv) (recommended for speed) or standard `pip`.
 
 ## 🚀 Installation
 
 ### 1. Clone the Repository
+
 ```bash
 git clone https://github.com/phwtsp/mcp-google-ads.git
 cd mcp-google-ads
@@ -37,18 +38,21 @@ cd mcp-google-ads
 ### 2. Set Up Virtual Environment
 
 **Option A: Using `uv` (Fastest)**
+
 ```bash
 uv venv
 source .venv/bin/activate
 ```
 
 **Option B: Using standard Python**
+
 ```bash
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 ```
 
 ### 3. Install Dependencies
+
 ```bash
 pip install "mcp[cli]" google-ads
 ```
@@ -56,35 +60,41 @@ pip install "mcp[cli]" google-ads
 ## ⚙️ Configuration
 
 ### Environment Variables
+
 For security, credentials are passed via environment variables. Add these to your `.env` file or export them in your shell:
 
-| Variable | Description |
-| :--- | :--- |
+| Variable                     | Description                     |
+| :--------------------------- | :------------------------------ |
 | `GOOGLE_ADS_DEVELOPER_TOKEN` | Your Google Ads Developer Token |
-| `GOOGLE_ADS_CLIENT_ID` | OAuth2 Client ID |
-| `GOOGLE_ADS_CLIENT_SECRET` | OAuth2 Client Secret |
-| `GOOGLE_ADS_REFRESH_TOKEN` | OAuth2 Refresh Token |
+| `GOOGLE_ADS_CLIENT_ID`       | OAuth2 Client ID                |
+| `GOOGLE_ADS_CLIENT_SECRET`   | OAuth2 Client Secret            |
+| `GOOGLE_ADS_REFRESH_TOKEN`   | OAuth2 Refresh Token            |
 
 ### Account Mapping (`accounts.json`)
+
 Manage multiple accounts easily by mapping friendly names to Customer IDs. Create an `accounts.json` file in the root:
 
 ```json
 {
-    "My Client A": "123-456-7890",
-    "Agency Account": "987-654-3210"
+  "My Client A": "123-456-7890",
+  "Agency Account": "987-654-3210"
 }
 ```
-*Note: The server automatically handles hyphens, so "123-456-7890" is processed as "1234567890".*
+
+_Note: The server automatically handles hyphens, so "123-456-7890" is processed as "1234567890"._
 
 ## 📖 Usage
 
 ### Testing with MCP CLI
+
 Run the server interactively using the MCP Inspector:
+
 ```bash
 mcp dev server.py
 ```
 
 ### Integration: Cursor & Claude Desktop
+
 Add this configuration to your MCP settings file (typically `~/.cursor/mcp.json` or `claude_desktop_config.json`):
 
 ```json
@@ -105,4 +115,5 @@ Add this configuration to your MCP settings file (typically `~/.cursor/mcp.json`
 ```
 
 ## 📄 License
+
 This project is licensed under the [MIT License](LICENSE).

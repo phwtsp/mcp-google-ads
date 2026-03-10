@@ -214,6 +214,60 @@ def google_ads_run_gaql(customer_id: str, query: str) -> list[dict]:
     except Exception as e:
         raise RuntimeError(f"Erro na execução da query GAQL: {str(e)}")
 
+@mcp.tool()
+def google_ads_get_keyword_volume(customer_id: str, keywords: list[str]) -> list[dict]:
+    """
+    Lista o volume de pesquisa médio mensal e concorrência para uma lista de palavras-chave.
+    Limitado para buscas no Brasil e em Português.
+    
+    Args:
+        customer_id: O Nome da conta ou ID numérico do Google Ads.
+        keywords: Lista de palavras-chave (ex: ["comprar carro", "aluguel de carros"]).
+    """
+    try:
+        clean_id = validate_customer_id(customer_id)
+        client = get_google_ads_client()
+        
+        keyword_plan_idea_service = client.get_service("KeywordPlanIdeaService")
+        geo_target_service = client.get_service("GeoTargetConstantService")
+        google_ads_service = client.get_service("GoogleAdsService")
+
+        # 2076 = ID do Brasil
+        location_rns = [geo_target_service.geo_target_constant_path("2076")]
+        
+        # 1014 = ID do idioma Português
+        language_rn = google_ads_service.language_constant_path("1014")
+
+        request = client.get_type("GenerateKeywordIdeasRequest")
+        request.customer_id = clean_id
+        request.language = language_rn
+        request.geo_target_constants = location_rns
+        request.include_adult_keywords = False
+        request.keyword_plan_network = client.enums.KeywordPlanNetworkEnum.GOOGLE_SEARCH_AND_PARTNERS
+
+        # Definindo as palavras-chave sementes
+        request.keyword_seed.keywords.extend(keywords)
+
+        # Gerando as ideias/volumes
+        keyword_ideas = keyword_plan_idea_service.generate_keyword_ideas(request=request)
+
+        results = []
+        for idea in keyword_ideas:
+            results.append({
+                "keyword": idea.text,
+                "avg_monthly_searches": idea.keyword_idea_metrics.avg_monthly_searches,
+                "competition": idea.keyword_idea_metrics.competition.name,
+                "competition_index": idea.keyword_idea_metrics.competition_index
+            })
+            
+        # Ordenamos pelas palavras com maior volume de buscas
+        results.sort(key=lambda x: x.get("avg_monthly_searches") or 0, reverse=True)
+
+        return results
+
+    except Exception as e:
+        raise RuntimeError(f"Erro ao buscar volume de palavras-chave: {str(e)}")
+
 # Inicia o servidor
 if __name__ == "__main__":
     mcp.run()
